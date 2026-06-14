@@ -44,7 +44,33 @@ const timerEl = document.getElementById('timer');
 const character = document.getElementById('cute-character');
 
 // =========================================
-// 3. TIMER FUNCTIONS
+// 3. BACKGROUND ANIMATION SPAWNER
+// =========================================
+function spawnDecorations(type) {
+    let container = document.getElementById('decor-container');
+    if (container) container.remove();
+    
+    container = document.createElement('div');
+    container.id = 'decor-container';
+    container.className = 'decor-container';
+    document.body.appendChild(container);
+
+    const count = 6;
+    const content = type === 'day' ? '🐦' : '☁️';
+
+    for (let i = 0; i < count; i++) {
+        const item = document.createElement('div');
+        item.className = 'decor-item';
+        item.textContent = content;
+        item.style.top = `${Math.random() * 80}%`;
+        item.style.animationDuration = `${10 + Math.random() * 15}s`;
+        item.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(item);
+    }
+}
+
+// =========================================
+// 4. TIMER FUNCTIONS
 // =========================================
 function startTimer() {
     stopTimer();
@@ -63,7 +89,7 @@ function stopTimer() {
 }
 
 // =========================================
-// 4. CURSOR & TRACKING
+// 5. CURSOR & TRACKING
 // =========================================
 window.addEventListener('mousemove', (e) => {
     if (cursor) {
@@ -84,7 +110,7 @@ window.addEventListener('mousemove', (e) => {
 });
 
 // =========================================
-// 5. GRID & GAME ENGINE
+// 6. GRID & GAME ENGINE
 // =========================================
 function initGame() {
     stopTimer();
@@ -95,20 +121,13 @@ function initGame() {
     isFirstClick = true;
     gameOver = false;
     
-    // --- Update Character Styling ---
+    // Set character appearance
     if (character) {
         character.className = `cute-character ${currentTheme === 'day' ? 'boy' : 'girl'}`;
     }
 
-    // --- Update Background Animations ---
-    let bgElement = document.querySelector('.bg-anim');
-    if (!bgElement) {
-        bgElement = document.createElement('div');
-        bgElement.className = 'bg-anim';
-        document.body.appendChild(bgElement);
-    }
-    bgElement.className = `bg-anim ${currentTheme === 'day' ? 'bird' : 'cloud'}`;
-    bgElement.textContent = currentTheme === 'day' ? '🐦' : '☁️';
+    // Set background animations
+    spawnDecorations(currentTheme);
 
     const { rows, cols, mines } = CONFIG[currentTheme];
     mineCountEl.textContent = `Mines: ${mines}`;

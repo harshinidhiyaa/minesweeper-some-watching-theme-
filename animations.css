@@ -1,60 +1,36 @@
-/* Background Elements */
-.bird, .cloud {
+/* Container for background elements */
+.decor-container {
     position: fixed;
-    top: 10%;
+    top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none;
     z-index: 0;
-    font-size: 2rem;
 }
 
-/* Day Mode: Flying Birds */
-.bird { animation: flyAcross 10s linear infinite; }
-@keyframes flyAcross {
-    0% { left: -100px; transform: translateY(0); }
-    50% { transform: translateY(-50px); }
-    100% { left: 100vw; transform: translateY(0); }
-}
-
-/* Night Mode: Drifting Clouds */
-.cloud { 
-    opacity: 0.6;
-    animation: drift 20s linear infinite; 
-}
-@keyframes drift {
-    from { left: -200px; }
-    to { left: 100vw; }
-}
-/* --- Character Styles --- */
-/* The base styles for #cute-character should already exist in your main style.css */
-
-/* Girlish look: Eyelashes */
-.cute-character.girl::after {
-    content: '';
+/* Base style for the moving elements */
+.decor-item {
     position: absolute;
-    top: -5px; /* Adjust based on your eye height */
-    left: 10px;
-    width: 20px;
-    height: 10px;
-    border-top: 3px solid #333;
-    border-radius: 50%;
-}
-
-/* Boyish look: Different color or slight shape change */
-.cute-character.boy {
-    background-color: #bbdefb; /* Light blue tint for day */
-}
-
-/* --- Environment Animations --- */
-.bird, .cloud {
-    position: fixed;
-    top: 10%;
-    pointer-events: none;
-    z-index: 0;
     font-size: 2rem;
-    animation: drift 15s linear infinite;
+    animation: drift linear infinite;
+    opacity: 0.7;
 }
 
 @keyframes drift {
-    0% { left: -100px; }
-    100% { left: 105vw; }
+    from { transform: translateX(-100px); }
+    to { transform: translateX(105vw); }
+}
+
+/* --- Character Styles (No Emojis) --- */
+.cute-character {
+    transition: all 0.3s ease;
+    border-radius: 50%; /* Default round/girl-ish */
+}
+
+.cute-character.boy {
+    background-color: #bbdefb; /* Light Blue */
+    border-radius: 20%;        /* More boxy/boyish */
+}
+
+.cute-character.girl {
+    background-color: #f8bbd0; /* Light Pink */
+    border-radius: 50%;        /* Softer/girlish */
 }
