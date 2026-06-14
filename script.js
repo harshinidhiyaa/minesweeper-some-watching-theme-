@@ -8,7 +8,8 @@ const CONFIG = {
 
 const THEME_ASSETS = {
     day: {
-        mines: '🐍', safeRevealed: '#a5d6a7',
+        // FIXED: Changed safeRevealed to a lighter color so it's visible against the darker cell-bg
+        mines: '🐍', safeRevealed: '#e8f5e9', 
         icons: { 1: '🐦', 2: '🦜', 3: '🦅', 4: '🦆', 5: '🦉', 6: '🦢' },
         winTitle: "Survey Complete!", winDesc: "Every bird spotted, environment undisturbed.",
         loseTitle: "Startled Wildlife!", loseDesc: "You stumbled into a hidden hazard."
@@ -44,7 +45,7 @@ const timerEl = document.getElementById('timer');
 const character = document.getElementById('cute-character');
 
 // =========================================
-// 3. TIMER FUNCTIONS (Global Scope)
+// 3. TIMER FUNCTIONS
 // =========================================
 function startTimer() {
     stopTimer();
@@ -98,7 +99,6 @@ function initGame() {
     const { rows, cols, mines } = CONFIG[currentTheme];
     mineCountEl.textContent = `Mines: ${mines}`;
     
-    // Grid Setup
     if (currentTheme === 'day') {
         gameBoard.className = 'square-grid';
         gameBoard.style.display = 'grid';
@@ -116,8 +116,8 @@ function initGame() {
             if (currentTheme === 'night') {
                 cellEl.classList.add('hex');
                 cellEl.style.position = 'absolute';
-                cellEl.style.left = `${c * 54 + (r % 2 === 1 ? 27 : 0)}px`;
-                cellEl.style.top = `${r * 45}px`;
+                cellEl.style.left = `${c * 65 + (r % 2 === 1 ? 32 : 0)}px`;
+                cellEl.style.top = `${r * 60}px`;
             }
             
             const cellData = { element: cellEl, row: r, col: c, isMine: false, isRevealed: false, isFlagged: false, neighborMines: 0 };
@@ -206,7 +206,6 @@ function endGame(isWin, clickedMine = null) {
     statusBanner.classList.add('visible');
 }
 
-// UI Listeners
 themeToggle.addEventListener('click', () => {
     currentTheme = currentTheme === 'day' ? 'night' : 'day';
     toggleText.textContent = currentTheme === 'night' ? "Switch to Birdwatching (Day)" : "Switch to Stargazing (Night)";
@@ -215,5 +214,4 @@ themeToggle.addEventListener('click', () => {
 
 restartBtn.addEventListener('click', initGame);
 
-// Kickoff
 initGame();

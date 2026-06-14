@@ -110,8 +110,8 @@ main { flex: 1; display: flex; justify-content: center; align-items: center; pos
 .cell:hover { background-color: var(--cell-hover); transform: scale(1.05); }
 
 .cell.hex {
-    width: 52px; 
-    height: 58px;
+    width: 70px; /* Larger */
+    height: 80px; /* Larger */
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     border-radius: 0;
 }
@@ -120,10 +120,10 @@ main { flex: 1; display: flex; justify-content: center; align-items: center; pos
    5. THE CUTE OBSERVER
    ========================================= */
 #character-corner {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    width: 100%;
+    position: absolute; /* Anchors it */
+    bottom: 40px;
+    left: 40px;
+    z-index: 10;
 }
 
 #cute-character {
