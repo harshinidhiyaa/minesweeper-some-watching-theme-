@@ -8,8 +8,8 @@ const CONFIG = {
 
 const THEME_ASSETS = {
     day: {
-        // FIXED: Changed safeRevealed to a lighter color so it's visible against the darker cell-bg
-        mines: '🐍', safeRevealed: '#e8f5e9', 
+        // Changed to a lighter green to ensure it contrasts with the board color
+        mines: '🐍', safeRevealed: '#dcedc8', 
         icons: { 1: '🐦', 2: '🦜', 3: '🦅', 4: '🦆', 5: '🦉', 6: '🦢' },
         winTitle: "Survey Complete!", winDesc: "Every bird spotted, environment undisturbed.",
         loseTitle: "Startled Wildlife!", loseDesc: "You stumbled into a hidden hazard."
@@ -103,9 +103,19 @@ function initGame() {
         gameBoard.className = 'square-grid';
         gameBoard.style.display = 'grid';
         gameBoard.style.gridTemplateColumns = `repeat(${cols}, 45px)`;
+        // Reset container styling
+        gameBoard.style.position = '';
+        gameBoard.style.width = '';
+        gameBoard.style.height = '';
+        gameBoard.style.margin = '';
     } else {
         gameBoard.className = 'hex-grid';
         gameBoard.style.display = 'block';
+        gameBoard.style.position = 'relative';
+        // Fixed dimensions for hex container
+        gameBoard.style.width = `${cols * 65 + 40}px`;
+        gameBoard.style.height = `${rows * 60 + 20}px`;
+        gameBoard.style.margin = '0 auto';
     }
 
     for (let r = 0; r < rows; r++) {
