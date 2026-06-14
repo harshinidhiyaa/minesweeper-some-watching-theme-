@@ -8,7 +8,6 @@ const CONFIG = {
 
 const THEME_ASSETS = {
     day: {
-        // Changed to a lighter green to ensure it contrasts with the board color
         mines: '🐍', safeRevealed: '#dcedc8', 
         icons: { 1: '🐦', 2: '🦜', 3: '🦅', 4: '🦆', 5: '🦉', 6: '🦢' },
         winTitle: "Survey Complete!", winDesc: "Every bird spotted, environment undisturbed.",
@@ -96,6 +95,21 @@ function initGame() {
     isFirstClick = true;
     gameOver = false;
     
+    // --- Update Character Styling ---
+    if (character) {
+        character.className = `cute-character ${currentTheme === 'day' ? 'boy' : 'girl'}`;
+    }
+
+    // --- Update Background Animations ---
+    let bgElement = document.querySelector('.bg-anim');
+    if (!bgElement) {
+        bgElement = document.createElement('div');
+        bgElement.className = 'bg-anim';
+        document.body.appendChild(bgElement);
+    }
+    bgElement.className = `bg-anim ${currentTheme === 'day' ? 'bird' : 'cloud'}`;
+    bgElement.textContent = currentTheme === 'day' ? '🐦' : '☁️';
+
     const { rows, cols, mines } = CONFIG[currentTheme];
     mineCountEl.textContent = `Mines: ${mines}`;
     
@@ -103,7 +117,6 @@ function initGame() {
         gameBoard.className = 'square-grid';
         gameBoard.style.display = 'grid';
         gameBoard.style.gridTemplateColumns = `repeat(${cols}, 45px)`;
-        // Reset container styling
         gameBoard.style.position = '';
         gameBoard.style.width = '';
         gameBoard.style.height = '';
@@ -112,7 +125,6 @@ function initGame() {
         gameBoard.className = 'hex-grid';
         gameBoard.style.display = 'block';
         gameBoard.style.position = 'relative';
-        // Fixed dimensions for hex container
         gameBoard.style.width = `${cols * 65 + 40}px`;
         gameBoard.style.height = `${rows * 60 + 20}px`;
         gameBoard.style.margin = '0 auto';
