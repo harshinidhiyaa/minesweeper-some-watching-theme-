@@ -268,3 +268,84 @@ main {
     cursor: none;
     margin-top: 1rem;
 }
+/* =========================================
+   7. THE CUSTOM CURSORS (BINOCULARS / TELESCOPE)
+   ========================================= */
+#custom-cursor {
+    position: fixed;
+    pointer-events: none; /* Let clicks pass right through it! */
+    z-index: 999999; /* Stay above the win/loss banner */
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    transition: opacity 0.2s ease;
+}
+
+/* Day Mode: Binoculars */
+[data-theme="day"] #custom-cursor::after {
+    content: '🥽'; 
+    display: block;
+}
+
+/* Night Mode: Telescope Crosshair */
+[data-theme="night"] #custom-cursor::after {
+    content: '🔭';
+    display: block;
+}
+
+/* Hide the default mouse cursor across the whole app to sell the effect */
+body {
+    cursor: none;
+}
+button {
+    cursor: none; /* Even buttons should use our custom cursor */
+}
+
+/* =========================================
+   8. THE CUTE OBSERVER
+   ========================================= */
+#character-corner {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#cute-character {
+    width: 80px;
+    height: 70px;
+    background-color: var(--accent-color);
+    border-radius: 50% 50% 40% 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    /* Soft breathing animation */
+    animation: breathe 3s infinite ease-in-out;
+}
+
+.eye {
+    width: 24px;
+    height: 28px;
+    background-color: white;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+.pupil {
+    width: 12px;
+    height: 12px;
+    background-color: #1f2833;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* These variables are driven by our JS! */
+    transform: translate(calc(-50% + var(--eye-x, 0px)), calc(-50% + var(--eye-y, 0px)));
+    transition: transform 0.1s ease-out;
+}
+
+@keyframes breathe {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.05, 0.95) translateY(-5px); }
+}

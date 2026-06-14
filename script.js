@@ -54,7 +54,11 @@ const statusBanner = document.getElementById('status-banner');
 const statusTitle = document.getElementById('status-title');
 const statusDesc = document.getElementById('status-desc');
 const restartBtn = document.getElementById('restart-btn');
+const timerEl = document.getElementById('timer');
+const character = document.getElementById('cute-character');
 
+let timerInterval;
+let secondsElapsed = 0;
 // =========================================
 // 2. SMOOTH CURSOR & CHARACTER TRACKING
 // =========================================
@@ -65,17 +69,27 @@ window.addEventListener('mousemove', (e) => {
 });
 
 function trackMouseWithCharacter(mouseX, mouseY) {
-    const charRect = observerCharacter.getBoundingClientRect();
+    if (!character) return;
+    
+    const charRect = character.getBoundingClientRect();
     const charCenterX = charRect.left + charRect.width / 2;
     const charCenterY = charRect.top + charRect.height / 2;
     
+    // Calculate distance from center
     const deltaX = mouseX - charCenterX;
     const deltaY = mouseY - charCenterY;
-    const angleRad = Math.atan2(deltaY, deltaX);
-    const angleDeg = angleRad * (180 / Math.PI);
     
-    // Constrain movement so the neck rotation stays fluid and natural
-    observerCharacter.style.transform = `rotate(${angleDeg * 0.35}deg)`;
+    // Cap the movement so the pupils don't leave the white of the eyes
+    const maxEyeMove = 6; 
+    const angle = Math.atan2(deltaY, deltaX);
+    const distance = Math.min(Math.hypot(deltaX, deltaY) / 20, maxEyeMove);
+    
+    const eyeX = Math.cos(angle) * distance;
+    const eyeY = Math.sin(angle) * distance;
+    
+    // Pass the math to our CSS!
+    character.style.setProperty('--eye-x', `${eyeX}px`);
+    character.style.setProperty('--eye-y', `${eyeY}px`);
 }
 
 // =========================================
@@ -152,6 +166,22 @@ function initGame() {
             boardMatrix[r].push(cellData);
         }
     }
+    function startTimer() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const m = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+        const s = String(secondsElapsed % 60).padStart(2, '0');
+        timerEl.textContent = `${m}:${s}`;
+    }, 1000);
+}
+    function stopTimer() {
+    clearInterval(timerInterval);
+    
+}
+    stopTimer();
+    secondsElapsed = 0;
+    timerEl.textContent = "00:00";
 }
 
 // =========================================
@@ -163,6 +193,7 @@ function handleLeftClick(cell) {
     if (isFirstClick) {
         placeMines(cell.row, cell.col);
         calculateNeighbors();
+        startTimer(); // START THE CLOCK!
         isFirstClick = false;
     }
 
@@ -170,6 +201,7 @@ function handleLeftClick(cell) {
         endGame(false, cell);
         return;
     }
+    
 
     revealCell(cell);
     checkWinCondition();
@@ -278,11 +310,14 @@ function endGame(isWin, clickedMineCell = null) {
     if (clickedMineCell) {
         clickedMineCell.element.style.backgroundColor = '#e53935';
     }
+    stopTimer(); 
+    gameOver = true;
 
     // Trigger status display layout updates
     statusTitle.textContent = isWin ? assets.winTitle : assets.loseTitle;
     statusDesc.textContent = isWin ? assets.winDesc : assets.loseDesc;
     statusBanner.classList.add('visible');
+    
 }
 
 // Initial Kickoff
