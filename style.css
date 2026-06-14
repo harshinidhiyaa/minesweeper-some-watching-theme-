@@ -205,3 +205,36 @@ main { flex: 1; display: flex; justify-content: center; align-items: center; pos
     cursor: none;
     margin-top: 1rem;
 }
+/* =========================================
+   7. MOBILE RESPONSIVENESS
+   ========================================= */
+@media (max-width: 650px) {
+    header { padding: 1rem; }
+    .controls {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        text-align: center;
+    }
+    #game-board-container {
+        /* Scales down the hard-coded pixel grid to fit the screen */
+        transform: scale(0.75); 
+        transform-origin: top center;
+        padding: 1rem;
+    }
+    #character-corner {
+        bottom: 10px;
+        left: 10px;
+        transform: scale(0.8);
+    }
+    #status-banner {
+        width: 90%;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 450px) {
+    #game-board-container {
+        transform: scale(0.55);
+    }
+}

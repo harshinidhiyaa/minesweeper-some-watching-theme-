@@ -1,0 +1,46 @@
+/* VISITOR SYSTEM - Cross-Theme Annoyances */
+#visitor {
+    position: absolute;
+    top: 20px;
+    left: 25px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    z-index: 20;
+    pointer-events: none; /* So it doesn't block clicks */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    animation: annoyOrbit 4s infinite linear;
+}
+
+/* Day Shift: Visited by a Night Creature (Bat) */
+[data-theme="day"] #visitor {
+    background-color: #1f2833;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+[data-theme="day"] #visitor::after { content: '🦇'; font-size: 1.2rem; }
+
+/* Night Shift: Visited by a Day Creature (Sun) */
+[data-theme="night"] #visitor {
+    background-color: #fff59d;
+    box-shadow: 0 0 15px #fff59d;
+}
+[data-theme="night"] #visitor::after { content: '☀️'; font-size: 1.2rem; }
+
+/* The Orbit Path */
+@keyframes annoyOrbit {
+    0% { transform: rotate(0deg) translateX(70px) rotate(0deg); }
+    100% { transform: rotate(360deg) translateX(70px) rotate(-360deg); }
+}
+
+/* The Main Character's Annoyed Reaction */
+.annoyed-shake {
+    animation: shake 0.2s infinite alternate !important;
+}
+
+@keyframes shake {
+    0% { transform: translateX(-3px) scale(1.02); }
+    100% { transform: translateX(3px) scale(0.98); }
+}
