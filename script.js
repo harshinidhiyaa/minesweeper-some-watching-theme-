@@ -8,15 +8,16 @@ const CONFIG = {
 
 const THEME_ASSETS = {
     day: {
-        // Changed to a lighter green to ensure it contrasts with the board color
-        mines: 'ðŸ', safeRevealed: '#dcedc8', 
-        icons: { 1: 'ðŸ¦', 2: 'ðŸ¦œ', 3: 'ðŸ¦…', 4: 'ðŸ¦†', 5: 'ðŸ¦‰', 6: 'ðŸ¦¢' },
+        mines: '🐍', // Hidden hazard (snake)
+        safeRevealed: '#dcedc8', 
+        icons: { 1: '🐦', 2: '🦜', 3: '🦅', 4: '🦆', 5: '🦉', 6: '🦩' },
         winTitle: "Survey Complete!", winDesc: "Every bird spotted, environment undisturbed.",
         loseTitle: "Startled Wildlife!", loseDesc: "You stumbled into a hidden hazard."
     },
     night: {
-        mines: 'â˜„ï¸', safeRevealed: '#1f2833',
-        icons: { 1: 'â­', 2: 'ðŸª', 3: 'ðŸ›°ï¸', 4: 'ðŸš€', 5: 'ðŸ›¸', 6: 'ðŸŒŒ' },
+        mines: '☄️', // Cosmic debris (comet)
+        safeRevealed: '#1f2833',
+        icons: { 1: '⭐', 2: '🪐', 3: '🛰️', 4: '🚀', 5: '🛸', 6: '🌌' },
         winTitle: "Sky Mapped!", winDesc: "All celestial configurations securely plotted.",
         loseTitle: "System Overload!", loseDesc: "Telescope array collided with cosmic debris."
     }
@@ -155,7 +156,7 @@ function handleLeftClick(cell) {
 function handleRightClick(cell) {
     if (gameOver || cell.isRevealed) return;
     cell.isFlagged = !cell.isFlagged;
-    cell.element.textContent = cell.isFlagged ? 'ðŸš©' : ''; 
+    cell.element.textContent = cell.isFlagged ? '🚩' : ''; 
 }
 
 function placeMines(fR, fC) {

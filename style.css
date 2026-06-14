@@ -76,8 +76,8 @@ button#theme-toggle:active { transform: scale(0.95); }
     transition: opacity 0.2s ease;
 }
 
-[data-theme="day"] #custom-cursor::after { content: 'ðŸ¥½'; }
-[data-theme="night"] #custom-cursor::after { content: 'ðŸ”­'; }
+[data-theme="day"] #custom-cursor::after { content: ' binoculars'; }  
+[data-theme="night"] #custom-cursor::after { content: '🔭'; } 
 
 /* =========================================
    4. THE GAME BOARD & CELLS
