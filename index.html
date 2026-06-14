@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observer Sweeper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="custom-cursor"></div>
+
+    <header>
+        <div class="controls">
+            <span id="mine-count">Mines: 10</span>
+            <button id="theme-toggle" aria-label="Toggle Theme">
+                <span class="toggle-text">Switch to Stargazing (Night)</span>
+            </button>
+            <span id="timer">00:00</span>
+        </div>
+    </header>
+
+    <main>
+        <div id="character-corner">
+            <div id="observer-character" class="boy-day">
+                </div>
+        </div>
+
+        <div id="game-board-container">
+            <div id="game-board" class="square-grid">
+                </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
