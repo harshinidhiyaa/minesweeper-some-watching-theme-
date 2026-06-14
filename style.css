@@ -167,10 +167,13 @@ main {
 }
 
 /* Hexagon Shape (Applied dynamically in JS for Night Mode) */
+/* Hexagon Shape (Applied dynamically in JS for Night Mode) */
 .cell.hex {
+    /* Make the base larger to compensate for the chopped-off corners */
+    width: 52px; 
+    height: 58px;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     border-radius: 0;
-    /* We will handle the offset layout for the honeycomb via JS/CSS adjustments later */
 }
 
 /* =========================================

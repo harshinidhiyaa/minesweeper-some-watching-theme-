@@ -64,7 +64,7 @@ themeToggle.addEventListener('click', () => {
 });
 
 // =========================================
-// 4. DYNAMIC GRID GENERATION
+// 4. DYNAMIC GRID GENERATION (FIXED LAYOUT)
 // =========================================
 function initGame() {
     // Clear the existing board
@@ -76,15 +76,22 @@ function initGame() {
     // Configure the grid container layout based on mode
     if (currentTheme === 'day') {
         gameBoard.className = 'square-grid';
-        gameBoard.style.gridTemplateColumns = `repeat(${cols}, 45px)`;
         gameBoard.style.display = 'grid';
+        gameBoard.style.gridTemplateColumns = `repeat(${cols}, 45px)`;
+        
+        // CLEANUP: Remove leftover Night mode styles so the grid centers perfectly
+        gameBoard.style.position = '';
+        gameBoard.style.width = '';
+        gameBoard.style.height = '';
     } else {
         gameBoard.className = 'hex-grid';
-        gameBoard.style.display = 'block'; // Block layout for manual relative hex shifting
+        gameBoard.style.display = 'block'; 
         gameBoard.style.position = 'relative';
-        // Give the container a defined size based on hex spacing
-        gameBoard.style.width = `${cols * 40 + 20}px`;
-        gameBoard.style.height = `${rows * 38 + 20}px`;
+        
+        // NEW MATH: Larger hexagons (52x58) need wider spacing
+        // Horizontal step is 54px. Vertical step is 45px (roughly 75% of height).
+        gameBoard.style.width = `${cols * 54 + 27}px`; // +27 accommodates the odd row overhang
+        gameBoard.style.height = `${rows * 45 + 20}px`; // +20 gives breathing room at the bottom
     }
 
     // Build the grid cells
@@ -100,15 +107,15 @@ function initGame() {
             
             // Apply theme-specific architecture
             if (currentTheme === 'day') {
-                // Standard grid handles position
+                // Standard grid handles position automatically
             } else {
-                // Night Mode: Nesting Hexagons requires precise offsets for the honeycomb effect
+                // Night Mode: Nesting Hexagons
                 cellEl.classList.add('hex');
                 cellEl.style.position = 'absolute';
                 
-                // The Hex math: stagger every odd row to the right
-                const xOffset = c * 42 + (r % 2 === 1 ? 21 : 0);
-                const yOffset = r * 36;
+                // NEW MATH: Spacing for the larger hexagons with a small gap
+                const xOffset = c * 54 + (r % 2 === 1 ? 27 : 0);
+                const yOffset = r * 45;
                 
                 cellEl.style.left = `${xOffset}px`;
                 cellEl.style.top = `${yOffset}px`;
@@ -125,7 +132,6 @@ function initGame() {
                 neighborMines: 0
             };
             
-            // Event listeners for clicks (we will write these handlers in Step 4)
             cellEl.addEventListener('click', () => handleCellClick(cellData));
             cellEl.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
@@ -137,10 +143,3 @@ function initGame() {
         }
     }
 }
-
-// Temporary placeholder functions so the app doesn't crash when clicking cells right now
-function handleCellClick(cell) { console.log(`Left clicked cell: ${cell.row}, ${cell.col}`); }
-function handleCellRightClick(cell) { console.log(`Right clicked cell: ${cell.row}, ${cell.col}`); }
-
-// Fire up the engine on load!
-initGame();
