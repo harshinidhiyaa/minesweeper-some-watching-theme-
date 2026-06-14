@@ -1,38 +1,30 @@
 /* =========================================
    1. BASE STYLES & THEME VARIABLES
    ========================================= */
-
-/* Day Mode: The Birdwatcher */
 :root[data-theme="day"] {
-    --bg-color: #e8f5e9; /* Soft forest mist */
-    --text-color: #1b5e20; /* Deep foliage green */
+    --bg-color: #e8f5e9;
+    --text-color: #1b5e20;
     --accent-color: #81c784; 
     --board-bg: #c8e6c9;
     --cell-bg: #a5d6a7;
     --cell-hover: #81c784;
-    --cell-border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; /* Organic, tree-like/leafy shape */
+    --cell-border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
     --cursor-size: 60px;
 }
 
-/* Night Mode: The Stargazer */
 :root[data-theme="night"] {
-    --bg-color: #0b0c10; /* Deep space */
-    --text-color: #66fcf1; /* Neon cyan */
+    --bg-color: #0b0c10;
+    --text-color: #66fcf1;
     --accent-color: #45a29e;
     --board-bg: #1f2833;
     --cell-bg: #2b3a42;
     --cell-hover: #45a29e;
-    --cell-border-radius: 0px; /* Sharp edges for hexagons */
+    --cell-border-radius: 0px;
     --cursor-size: 40px;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Hide the default mouse so our custom one can shine */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -47,12 +39,7 @@ body {
 /* =========================================
    2. UI & CONTROLS
    ========================================= */
-
-header {
-    padding: 1.5rem;
-    display: flex;
-    justify-content: center;
-}
+header { padding: 1.5rem; display: flex; justify-content: center; }
 
 .controls {
     display: flex;
@@ -62,7 +49,6 @@ header {
     padding: 1rem 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    transition: background-color 0.5s ease;
 }
 
 button#theme-toggle {
@@ -72,81 +58,41 @@ button#theme-toggle {
     padding: 0.5rem 1rem;
     border-radius: 8px;
     font-weight: bold;
-    cursor: none; /* Inherit the hidden cursor */
+    cursor: none;
     transition: transform 0.2s;
 }
 
-button#theme-toggle:active {
-    transform: scale(0.95);
-}
+button#theme-toggle:active { transform: scale(0.95); }
 
 /* =========================================
    3. THE CUSTOM CURSOR
    ========================================= */
-
 #custom-cursor {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: var(--cursor-size);
-    height: var(--cursor-size);
-    pointer-events: none; /* So it doesn't block clicks */
-    z-index: 9999;
+    pointer-events: none; 
+    z-index: 999999;
     transform: translate(-50%, -50%);
-    transition: width 0.3s, height 0.3s, border-radius 0.3s;
+    font-size: 2.5rem;
+    transition: opacity 0.2s ease;
 }
 
-/* Day Cursor: Binoculars (Two overlapping circles) */
-:root[data-theme="day"] #custom-cursor {
-    border: 3px solid var(--text-color);
-    border-radius: 30px;
-    background: radial-gradient(circle, transparent 40%, rgba(27, 94, 32, 0.1) 100%);
-    box-shadow: -15px 0 0 -3px var(--bg-color), -15px 0 0 0 var(--text-color);
-}
-
-/* Night Cursor: Telescope Lens (One precise circle with a crosshair) */
-:root[data-theme="night"] #custom-cursor {
-    border: 2px solid var(--text-color);
-    border-radius: 50%;
-    background: radial-gradient(circle, transparent 60%, rgba(102, 252, 241, 0.2) 100%);
-}
-:root[data-theme="night"] #custom-cursor::after {
-    content: '+';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--text-color);
-    font-size: 1.5rem;
-}
+[data-theme="day"] #custom-cursor::after { content: '🥽'; }
+[data-theme="night"] #custom-cursor::after { content: '🔭'; }
 
 /* =========================================
    4. THE GAME BOARD & CELLS
    ========================================= */
-
-main {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
+main { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
 
 #game-board-container {
     background-color: var(--board-bg);
     padding: 2rem;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    transition: background-color 0.5s ease;
 }
 
-/* Standard Square Grid (Day Mode) */
-.square-grid {
-    display: grid;
-    gap: 8px; /* Breathing room for the organic shapes */
-}
+.square-grid { display: grid; gap: 8px; }
 
-/* Base Cell Styling */
 .cell {
     width: 45px;
     height: 45px;
@@ -158,18 +104,12 @@ main {
     font-size: 1.5rem;
     font-weight: bold;
     user-select: none;
-    transition: background-color 0.2s, transform 0.1s, border-radius 0.5s;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
-.cell:hover {
-    background-color: var(--cell-hover);
-    transform: scale(1.05);
-}
+.cell:hover { background-color: var(--cell-hover); transform: scale(1.05); }
 
-/* Hexagon Shape (Applied dynamically in JS for Night Mode) */
-/* Hexagon Shape (Applied dynamically in JS for Night Mode) */
 .cell.hex {
-    /* Make the base larger to compensate for the chopped-off corners */
     width: 52px; 
     height: 58px;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -177,136 +117,13 @@ main {
 }
 
 /* =========================================
-   5. THE OBSERVER (ANIMATED CHARACTER)
-   ========================================= */
-
-#character-corner {
-    position: absolute;
-    bottom: 40px;
-    left: 40px;
-    width: 120px;
-    height: 120px;
-    background-color: var(--board-bg);
-    border-radius: 50%;
-    border: 4px solid var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-
-#observer-character {
-    width: 80px;
-    height: 80px;
-    /* Placeholder emojis until we wire up the SVG/Canvas logic */
-    font-size: 3rem; 
-    line-height: 80px;
-    text-align: center;
-    transform-origin: center center;
-    transition: transform 0.1s ease-out; /* Smooth tracking */
-}
-
-/* Theme specific placeholders */
-:root[data-theme="day"] #observer-character::before { content: '👦'; }
-:root[data-theme="night"] #observer-character::before { content: '👧'; }
-
-/* =========================================
-   6. ICON & REVEAL REFINEMENTS
-   ========================================= */
-
-.cell.revealed {
-    font-size: 1.3rem;
-    cursor: default;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.15);
-}
-
-/* Distinct color accents for numbers/icons to help readability */
-.cell[data-count="1"] { color: #1e88e5; }
-.cell[data-count="2"] { color: #43a047; }
-.cell[data-count="3"] { color: #e53935; }
-.cell[data-count="4"], .cell[data-count="5"], .cell[data-count="6"] { color: #8e24aa; }
-
-/* Game Status Overlay */
-#status-banner {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    background-color: var(--board-bg);
-    color: var(--text-color);
-    padding: 2rem 3rem;
-    border-radius: 16px;
-    border: 3px solid var(--accent-color);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    text-align: center;
-    z-index: 10000;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s ease;
-}
-
-#status-banner.visible {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-    pointer-events: auto;
-}
-
-#status-banner h2 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-}
-
-#status-banner button {
-    background-color: var(--accent-color);
-    color: var(--bg-color);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: none;
-    margin-top: 1rem;
-}
-/* =========================================
-   7. THE CUSTOM CURSORS (BINOCULARS / TELESCOPE)
-   ========================================= */
-#custom-cursor {
-    position: fixed;
-    pointer-events: none; /* Let clicks pass right through it! */
-    z-index: 999999; /* Stay above the win/loss banner */
-    transform: translate(-50%, -50%);
-    font-size: 2.5rem;
-    transition: opacity 0.2s ease;
-}
-
-/* Day Mode: Binoculars */
-[data-theme="day"] #custom-cursor::after {
-    content: '🥽'; 
-    display: block;
-}
-
-/* Night Mode: Telescope Crosshair */
-[data-theme="night"] #custom-cursor::after {
-    content: '🔭';
-    display: block;
-}
-
-/* Hide the default mouse cursor across the whole app to sell the effect */
-body {
-    cursor: none;
-}
-button {
-    cursor: none; /* Even buttons should use our custom cursor */
-}
-
-/* =========================================
-   8. THE CUTE OBSERVER
+   5. THE CUTE OBSERVER
    ========================================= */
 #character-corner {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 #cute-character {
@@ -319,7 +136,6 @@ button {
     align-items: center;
     gap: 10px;
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    /* Soft breathing animation */
     animation: breathe 3s infinite ease-in-out;
 }
 
@@ -340,7 +156,6 @@ button {
     position: absolute;
     top: 50%;
     left: 50%;
-    /* These variables are driven by our JS! */
     transform: translate(calc(-50% + var(--eye-x, 0px)), calc(-50% + var(--eye-y, 0px)));
     transition: transform 0.1s ease-out;
 }
@@ -348,4 +163,45 @@ button {
 @keyframes breathe {
     0%, 100% { transform: scale(1) translateY(0); }
     50% { transform: scale(1.05, 0.95) translateY(-5px); }
+}
+
+/* =========================================
+   6. GAME STATUS OVERLAY
+   ========================================= */
+.cell.revealed { cursor: default; box-shadow: inset 0 2px 5px rgba(0,0,0,0.15); }
+.cell[data-count="1"] { color: #1e88e5; }
+.cell[data-count="2"] { color: #43a047; }
+.cell[data-count="3"] { color: #e53935; }
+.cell[data-count="4"], .cell[data-count="5"], .cell[data-count="6"] { color: #8e24aa; }
+
+#status-banner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background-color: var(--board-bg);
+    color: var(--text-color);
+    padding: 2rem 3rem;
+    border-radius: 16px;
+    border: 3px solid var(--accent-color);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    text-align: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+#status-banner.visible { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+#status-banner h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+#status-banner button {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: none;
+    margin-top: 1rem;
 }
