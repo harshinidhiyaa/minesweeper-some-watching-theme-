@@ -1,9 +1,41 @@
 // =========================================
-// 1. GAME STATE & CONFIG
+// 1. GAME CONFIG & THEMATIC DICTIONARIES
 // =========================================
 const CONFIG = {
     day: { rows: 9, cols: 9, mines: 10 },
     night: { rows: 8, cols: 8, mines: 10 } 
+};
+
+// Thematic Icons matching the spec
+const THEME_ASSETS = {
+    day: {
+        mines: '🐍', // Hidden hazard
+        safeRevealed: '#a5d6a7',
+        icons: {
+            1: '🐦', // Sparrow
+            2: '🦜', // Robin/Colorful sighting
+            3: '🦅', // Woodpecker / Majestic Raptor
+            4: '🦆', 5: '🦉', 6: '🦢' // Extended sightings
+        },
+        winTitle: "Survey Complete!",
+        winDesc: "Every bird spotted, environment undisturbed.",
+        loseTitle: "Startled Wildlife!",
+        loseDesc: "You stumbled into a hidden hazard."
+    },
+    night: {
+        mines: '☄️', // Dark matter/Comet anomaly
+        safeRevealed: '#1f2833',
+        icons: {
+            1: '⭐', // Distant Star
+            2: '🪐', // Ringed Planet
+            3: '🛰️', // Orbiting Satellite
+            4: '🚀', 5: '🛸', 6: '🌌' // Extended cosmic objects
+        },
+        winTitle: "Sky Mapped!",
+        winDesc: "All celestial configurations securely plotted.",
+        loseTitle: "System Overload!",
+        loseDesc: "Telescope array collided with cosmic debris."
+    }
 };
 
 let currentTheme = 'day';
@@ -17,9 +49,14 @@ const themeToggle = document.getElementById('theme-toggle');
 const gameBoard = document.getElementById('game-board');
 const toggleText = document.querySelector('.toggle-text');
 const observerCharacter = document.getElementById('observer-character');
+const mineCountEl = document.getElementById('mine-count');
+const statusBanner = document.getElementById('status-banner');
+const statusTitle = document.getElementById('status-title');
+const statusDesc = document.getElementById('status-desc');
+const restartBtn = document.getElementById('restart-btn');
 
 // =========================================
-// 2. THE SMOOTH CUSTOM CURSOR
+// 2. SMOOTH CURSOR & CHARACTER TRACKING
 // =========================================
 window.addEventListener('mousemove', (e) => {
     cursor.style.left = `${e.clientX}px`;
@@ -37,11 +74,12 @@ function trackMouseWithCharacter(mouseX, mouseY) {
     const angleRad = Math.atan2(deltaY, deltaX);
     const angleDeg = angleRad * (180 / Math.PI);
     
-    observerCharacter.style.transform = `rotate(${angleDeg * 0.4}deg)`;
+    // Constrain movement so the neck rotation stays fluid and natural
+    observerCharacter.style.transform = `rotate(${angleDeg * 0.35}deg)`;
 }
 
 // =========================================
-// 3. THEME TOGGLING ACTION
+// 3. UI EVENTS
 // =========================================
 themeToggle.addEventListener('click', () => {
     currentTheme = currentTheme === 'day' ? 'night' : 'day';
@@ -49,27 +87,31 @@ themeToggle.addEventListener('click', () => {
     initGame();
 });
 
+restartBtn.addEventListener('click', () => {
+    statusBanner.classList.remove('visible');
+    initGame();
+});
+
 // =========================================
-// 4. DYNAMIC GRID GENERATION
+// 4. GRID GENERATION
 // =========================================
 function initGame() {
-    // FIX: Force the theme attribute instantly so colors never load transparent
     document.documentElement.setAttribute('data-theme', currentTheme);
+    statusBanner.classList.remove('visible');
     
     gameBoard.innerHTML = '';
     boardMatrix = [];
     isFirstClick = true;
     gameOver = false;
     
-    const { rows, cols } = CONFIG[currentTheme];
+    const { rows, cols, mines } = CONFIG[currentTheme];
+    mineCountEl.textContent = `Mines: ${mines}`;
     
     if (currentTheme === 'day') {
         gameBoard.className = 'square-grid';
         gameBoard.style.display = 'grid';
         gameBoard.style.gridTemplateColumns = `repeat(${cols}, 45px)`;
-        gameBoard.style.position = '';
-        gameBoard.style.width = '';
-        gameBoard.style.height = '';
+        gameBoard.style.position = ''; gameBoard.style.width = ''; gameBoard.style.height = '';
     } else {
         gameBoard.className = 'hex-grid';
         gameBoard.style.display = 'block'; 
@@ -113,13 +155,11 @@ function initGame() {
 }
 
 // =========================================
-// 5. THE MINESWEEPER ENGINE (THE BRAIN)
+// 5. GAME ENGINE LOGIC
 // =========================================
-
 function handleLeftClick(cell) {
     if (gameOver || cell.isRevealed || cell.isFlagged) return;
 
-    // Ensure the player never hits a mine on their very first click
     if (isFirstClick) {
         placeMines(cell.row, cell.col);
         calculateNeighbors();
@@ -127,20 +167,18 @@ function handleLeftClick(cell) {
     }
 
     if (cell.isMine) {
-        revealAllMines();
-        cell.element.style.backgroundColor = 'red'; // BOOM
-        gameOver = true;
+        endGame(false, cell);
         return;
     }
 
     revealCell(cell);
+    checkWinCondition();
 }
 
 function handleRightClick(cell) {
     if (gameOver || cell.isRevealed) return;
     
     cell.isFlagged = !cell.isFlagged;
-    // Basic flag visual for now
     cell.element.textContent = cell.isFlagged ? '🚩' : ''; 
 }
 
@@ -153,7 +191,6 @@ function placeMines(firstRow, firstCol) {
         const c = Math.floor(Math.random() * cols);
         const cell = boardMatrix[r][c];
 
-        // Don't put a mine on the cell we just clicked, or on an existing mine
         if (!cell.isMine && !(r === firstRow && c === firstCol)) {
             cell.isMine = true;
             minesPlaced++;
@@ -166,28 +203,16 @@ function getNeighbors(r, c) {
     const { rows, cols } = CONFIG[currentTheme];
 
     if (currentTheme === 'day') {
-        // Standard 8-way Square Math
-        const dirs = [
-            [-1,-1], [-1,0], [-1,1],
-            [0,-1],          [0,1],
-            [1,-1],  [1,0],  [1,1]
-        ];
+        const dirs = [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]];
         dirs.forEach(([dr, dc]) => {
             const nr = r + dr, nc = c + dc;
             if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) neighbors.push(boardMatrix[nr][nc]);
         });
     } else {
-        // Complex 6-way Hex Math (Offsets change depending on if row is even or odd!)
         const isOddRow = r % 2 === 1;
-        const dirs = isOddRow ? [
-            [-1, 0], [-1, 1], // Top-Left, Top-Right
-            [0, -1], [0, 1],  // Left, Right
-            [1, 0],  [1, 1]   // Bottom-Left, Bottom-Right
-        ] : [
-            [-1, -1], [-1, 0], // Top-Left, Top-Right
-            [0, -1],  [0, 1],  // Left, Right
-            [1, -1],  [1, 0]   // Bottom-Left, Bottom-Right
-        ];
+        const dirs = isOddRow ? 
+            [[-1, 0], [-1, 1], [0, -1], [0, 1], [1, 0], [1, 1]] : 
+            [[-1, -1], [-1, 0], [0, -1], [0, 1], [1, -1], [1, 0]];
 
         dirs.forEach(([dr, dc]) => {
             const nr = r + dr, nc = c + dc;
@@ -214,27 +239,51 @@ function revealCell(cell) {
     if (cell.isRevealed || cell.isFlagged) return;
     
     cell.isRevealed = true;
-    cell.element.style.backgroundColor = currentTheme === 'day' ? '#81c784' : '#45a29e';
-    cell.element.style.transform = 'scale(0.95)';
+    cell.element.classList.add('revealed');
+    cell.element.style.backgroundColor = THEME_ASSETS[currentTheme].safeRevealed;
     
     if (cell.neighborMines > 0) {
-        // Temporary numbers until we add our Bird/Planet icons!
-        cell.element.textContent = cell.neighborMines;
+        cell.element.dataset.count = cell.neighborMines;
+        // Lookup the specific bird or planetary asset from our asset map
+        cell.element.textContent = THEME_ASSETS[currentTheme].icons[cell.neighborMines] || cell.neighborMines;
     } else {
-        // Flood fill: if it's a 0, reveal all neighbors automatically
+        cell.element.textContent = '';
         const neighbors = getNeighbors(cell.row, cell.col);
         neighbors.forEach(n => revealCell(n));
     }
 }
 
-function revealAllMines() {
-    boardMatrix.flat().forEach(cell => {
-        if (cell.isMine) {
-            cell.element.textContent = currentTheme === 'day' ? '🐍' : '☄️';
-            cell.element.style.backgroundColor = 'rgba(255,0,0,0.3)';
-        }
-    });
+function checkWinCondition() {
+    const { rows, cols, mines } = CONFIG[currentTheme];
+    const targetRevealed = (rows * cols) - mines;
+    const currentRevealed = boardMatrix.flat().filter(cell => cell.isRevealed).length;
+    
+    if (currentRevealed === targetRevealed) {
+        endGame(true);
+    }
 }
 
-// Fire it up!
+function endGame(isWin, clickedMineCell = null) {
+    gameOver = true;
+    const assets = THEME_ASSETS[currentTheme];
+    
+    // Uncover remaining positions safely
+    boardMatrix.flat().forEach(cell => {
+        if (cell.isMine) {
+            cell.element.textContent = assets.mines;
+            if (!isWin) cell.element.style.backgroundColor = 'rgba(229, 57, 53, 0.2)';
+        }
+    });
+
+    if (clickedMineCell) {
+        clickedMineCell.element.style.backgroundColor = '#e53935';
+    }
+
+    // Trigger status display layout updates
+    statusTitle.textContent = isWin ? assets.winTitle : assets.loseTitle;
+    statusDesc.textContent = isWin ? assets.winDesc : assets.loseDesc;
+    statusBanner.classList.add('visible');
+}
+
+// Initial Kickoff
 initGame();
