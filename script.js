@@ -8,14 +8,15 @@ const CONFIG = {
 
 const THEME_ASSETS = {
     day: {
-        mines: '🐍', safeRevealed: '#dcedc8', 
-        icons: { 1: '🐦', 2: '🦜', 3: '🦅', 4: '🦆', 5: '🦉', 6: '🦢' },
+        // Changed to a lighter green to ensure it contrasts with the board color
+        mines: 'ðŸ', safeRevealed: '#dcedc8', 
+        icons: { 1: 'ðŸ¦', 2: 'ðŸ¦œ', 3: 'ðŸ¦…', 4: 'ðŸ¦†', 5: 'ðŸ¦‰', 6: 'ðŸ¦¢' },
         winTitle: "Survey Complete!", winDesc: "Every bird spotted, environment undisturbed.",
         loseTitle: "Startled Wildlife!", loseDesc: "You stumbled into a hidden hazard."
     },
     night: {
-        mines: '☄️', safeRevealed: '#1f2833',
-        icons: { 1: '⭐', 2: '🪐', 3: '🛰️', 4: '🚀', 5: '🛸', 6: '🌌' },
+        mines: 'â˜„ï¸', safeRevealed: '#1f2833',
+        icons: { 1: 'â­', 2: 'ðŸª', 3: 'ðŸ›°ï¸', 4: 'ðŸš€', 5: 'ðŸ›¸', 6: 'ðŸŒŒ' },
         winTitle: "Sky Mapped!", winDesc: "All celestial configurations securely plotted.",
         loseTitle: "System Overload!", loseDesc: "Telescope array collided with cosmic debris."
     }
@@ -44,33 +45,7 @@ const timerEl = document.getElementById('timer');
 const character = document.getElementById('cute-character');
 
 // =========================================
-// 3. BACKGROUND ANIMATION SPAWNER
-// =========================================
-function spawnDecorations(type) {
-    let container = document.getElementById('decor-container');
-    if (container) container.remove();
-    
-    container = document.createElement('div');
-    container.id = 'decor-container';
-    container.className = 'decor-container';
-    document.body.appendChild(container);
-
-    const count = 6;
-    const content = type === 'day' ? '🐦' : '☁️';
-
-    for (let i = 0; i < count; i++) {
-        const item = document.createElement('div');
-        item.className = 'decor-item';
-        item.textContent = content;
-        item.style.top = `${Math.random() * 80}%`;
-        item.style.animationDuration = `${10 + Math.random() * 15}s`;
-        item.style.animationDelay = `${Math.random() * 5}s`;
-        container.appendChild(item);
-    }
-}
-
-// =========================================
-// 4. TIMER FUNCTIONS
+// 3. TIMER FUNCTIONS
 // =========================================
 function startTimer() {
     stopTimer();
@@ -89,7 +64,7 @@ function stopTimer() {
 }
 
 // =========================================
-// 5. CURSOR & TRACKING
+// 4. CURSOR & TRACKING
 // =========================================
 window.addEventListener('mousemove', (e) => {
     if (cursor) {
@@ -110,7 +85,7 @@ window.addEventListener('mousemove', (e) => {
 });
 
 // =========================================
-// 6. GRID & GAME ENGINE
+// 5. GRID & GAME ENGINE
 // =========================================
 function initGame() {
     stopTimer();
@@ -121,14 +96,6 @@ function initGame() {
     isFirstClick = true;
     gameOver = false;
     
-    // Set character appearance
-    if (character) {
-        character.className = `cute-character ${currentTheme === 'day' ? 'boy' : 'girl'}`;
-    }
-
-    // Set background animations
-    spawnDecorations(currentTheme);
-
     const { rows, cols, mines } = CONFIG[currentTheme];
     mineCountEl.textContent = `Mines: ${mines}`;
     
@@ -136,6 +103,7 @@ function initGame() {
         gameBoard.className = 'square-grid';
         gameBoard.style.display = 'grid';
         gameBoard.style.gridTemplateColumns = `repeat(${cols}, 45px)`;
+        // Reset container styling
         gameBoard.style.position = '';
         gameBoard.style.width = '';
         gameBoard.style.height = '';
@@ -144,6 +112,7 @@ function initGame() {
         gameBoard.className = 'hex-grid';
         gameBoard.style.display = 'block';
         gameBoard.style.position = 'relative';
+        // Fixed dimensions for hex container
         gameBoard.style.width = `${cols * 65 + 40}px`;
         gameBoard.style.height = `${rows * 60 + 20}px`;
         gameBoard.style.margin = '0 auto';
@@ -186,7 +155,7 @@ function handleLeftClick(cell) {
 function handleRightClick(cell) {
     if (gameOver || cell.isRevealed) return;
     cell.isFlagged = !cell.isFlagged;
-    cell.element.textContent = cell.isFlagged ? '🚩' : ''; 
+    cell.element.textContent = cell.isFlagged ? 'ðŸš©' : ''; 
 }
 
 function placeMines(fR, fC) {
