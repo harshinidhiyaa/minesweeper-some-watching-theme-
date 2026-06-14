@@ -1,6 +1,5 @@
 // =========================================
 // CROSS-THEME VISITOR MODULE
-// Can be disabled by removing script from HTML
 // =========================================
 
 (function initVisitorSystem() {
@@ -10,9 +9,16 @@
         
         if (!charCorner || !mainChar) return;
 
-        // Spawn the visitor element
+        // Create the visitor container
         const visitor = document.createElement('div');
-        visitor.id = 'visitor';
+        visitor.id = 'visitor-blob';
+        
+        // Clone the HTML structure of the main character
+        visitor.innerHTML = `
+            <div class="eye"><div class="pupil"></div></div>
+            <div class="eye"><div class="pupil"></div></div>
+        `;
+        
         charCorner.appendChild(visitor);
 
         // Make the main character occasionally shake in frustration

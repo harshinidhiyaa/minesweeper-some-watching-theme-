@@ -1,38 +1,59 @@
-/* VISITOR SYSTEM - Cross-Theme Annoyances */
-#visitor {
+/* =========================================
+   VISITOR SYSTEM - Mini-Blob Annoyances
+   ========================================= */
+#visitor-blob {
     position: absolute;
-    top: 20px;
-    left: 25px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    z-index: 20;
-    pointer-events: none; /* So it doesn't block clicks */
+    top: 10px;
+    left: 50px;
+    width: 40px;  /* Half the size of the main 80px blob */
+    height: 35px; /* Half the size of the main 70px blob */
+    border-radius: 50% 50% 40% 40%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.5rem;
+    gap: 5px;
+    z-index: 20;
+    pointer-events: none;
     animation: annoyOrbit 4s infinite linear;
 }
 
-/* Day Shift: Visited by a Night Creature (Bat) */
-[data-theme="day"] #visitor {
-    background-color: #1f2833;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+/* The eyes for the visitor */
+#visitor-blob .eye {
+    width: 12px;
+    height: 14px;
+    background-color: white;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
 }
-[data-theme="day"] #visitor::after { content: '🦇'; font-size: 1.2rem; }
 
-/* Night Shift: Visited by a Day Creature (Sun) */
-[data-theme="night"] #visitor {
-    background-color: #fff59d;
-    box-shadow: 0 0 15px #fff59d;
+#visitor-blob .pupil {
+    width: 6px;
+    height: 6px;
+    background-color: #1f2833;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
 }
-[data-theme="night"] #visitor::after { content: '☀️'; font-size: 1.2rem; }
+
+/* Day Shift: Visited by the Night Blob (Teal) */
+[data-theme="day"] #visitor-blob {
+    background-color: #45a29e; /* Hardcoded Night accent color */
+    box-shadow: 0 5px 15px rgba(69, 162, 158, 0.4);
+}
+
+/* Night Shift: Visited by the Day Blob (Green) */
+[data-theme="night"] #visitor-blob {
+    background-color: #81c784; /* Hardcoded Day accent color */
+    box-shadow: 0 5px 15px rgba(129, 199, 132, 0.2);
+}
 
 /* The Orbit Path */
 @keyframes annoyOrbit {
-    0% { transform: rotate(0deg) translateX(70px) rotate(0deg); }
-    100% { transform: rotate(360deg) translateX(70px) rotate(-360deg); }
+    0% { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+    100% { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
 }
 
 /* The Main Character's Annoyed Reaction */
