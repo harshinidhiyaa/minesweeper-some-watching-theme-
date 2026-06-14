@@ -76,7 +76,7 @@ button#theme-toggle:active { transform: scale(0.95); }
     transition: opacity 0.2s ease;
 }
 
-[data-theme="day"] #custom-cursor::after { content: ' binoculars'; }  
+[data-theme="day"] #custom-cursor::after { content: '🔎'; }  
 [data-theme="night"] #custom-cursor::after { content: '🔭'; } 
 
 /* =========================================
