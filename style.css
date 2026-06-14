@@ -217,16 +217,25 @@ main { flex: 1; display: flex; justify-content: center; align-items: center; pos
         text-align: center;
     }
     #game-board-container {
-        /* Scales down the hard-coded pixel grid to fit the screen */
         transform: scale(0.75); 
         transform-origin: top center;
         padding: 1rem;
     }
+    
+    /* FIX 1: Pinned to the screen so it's always visible */
     #character-corner {
-        bottom: 10px;
-        left: 10px;
-        transform: scale(0.8);
+        position: fixed; 
+        bottom: 20px;
+        left: 20px;
+        transform: scale(0.7); /* Slightly smaller to save space */
+        z-index: 100; 
     }
+
+    /* FIX 2: Smaller cursor emojis for mobile */
+    #custom-cursor {
+        font-size: 1.5rem; 
+    }
+
     #status-banner {
         width: 90%;
         padding: 1.5rem;
