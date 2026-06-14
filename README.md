@@ -1,2 +1,6 @@
-# minesweeper-some-watching-theme-
-An interactive minesweeper game with different themes
+# Observer Sweeper
+
+It's Minesweeper, but you're birdwatching and stargazing instead. Stay safe from snake bits and a comet hitting you square.
+[Play here:](https://harshinidhiyaa.github.io/minesweeper-some-watching-theme-/)
+
+Made with HTML, CSS, and Vanilla JS.
